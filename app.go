@@ -25,7 +25,7 @@ func init() {
 
 func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, msg string, font int32) int32 {
 	defer handlePanic()
-	if strings.HasPrefix(msg, "[CQ:at,qq=3511330892]") && msg[22:30] == "#sysinfo" {
+	if strings.HasPrefix(msg, "[CQ:at,qq=3********]") && msg[22:30] == "#sysinfo" {	//群机器人的QQ号
 		reply := handleCmd()
 		cqp.SendGroupMsg(fromGroup, reply)
 	}
