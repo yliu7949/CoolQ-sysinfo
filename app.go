@@ -69,16 +69,8 @@ func handleCmd() string {
 		return "出错啦！"
 	}
 	diskInfo := strconv.FormatFloat(d.UsedPercent,'f',1,64)
-	diskText := "硬盘的使用量为" + diskInfo + "%\n"
-	l,err := load.Avg()		//Load
-	if err!= nil {
-		return "出错啦！"
-	}
-	loadInfo1 := strconv.FormatFloat(l.Load1,'f',2,64)
-	loadInfo5 := strconv.FormatFloat(l.Load5,'f',2,64)
-	loadInfo15 := strconv.FormatFloat(l.Load15,'f',2,64)
-	loadText := "系统负载  " + loadInfo1 + " " + loadInfo5 + " " + loadInfo15
-	text =  text + cpuText + memText + swapText + diskText + loadText
+	diskText := "硬盘的使用量为" + diskInfo + "%"
+	text =  text + cpuText + memText + swapText + diskText
 	return text
 }
 
