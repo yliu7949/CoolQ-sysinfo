@@ -5,9 +5,11 @@ import (
 	"github.com/Tnze/CoolQ-Golang-SDK/cqp"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //go:generate cqcfg -c .
@@ -44,14 +46,12 @@ func onPrivateMsg(subType, msgID int32, fromQQ int64, msg string, font int32) in
 func handleCmd() string {
 	text := "服务器的实时数据如下：\n"
 	var cpuText string
-	c, err := cpu.Times(false)		//CPU
+	c, err := cpu.Percent(time.Second,false)		//CPU
 	if err!= nil {
 		return "出错啦！"
 	}
-	for _, elem := range c {
-		cpuInfo := strconv.FormatFloat(100.0-elem.Idle/elem.Total()*100.0,'f',1,64)
-		cpuText = "CPU的使用量为" + cpuInfo + "%\n"
-	}
+	cpuInfo := strconv.FormatFloat(c[0],'f',1,64)
+	cpuText = "CPU的使用量为" + cpuInfo + "%\n"
 	m, err := mem.VirtualMemory()		//VirtualMemory
 	if err!= nil {
 		return "出错啦！"
@@ -69,9 +69,16 @@ func handleCmd() string {
 		return "出错啦！"
 	}
 	diskInfo := strconv.FormatFloat(d.UsedPercent,'f',1,64)
-	diskText := "硬盘的使用量为" + diskInfo + "%"
-
-	text =  text + cpuText + memText + swapText + diskText
+	diskText := "硬盘的使用量为" + diskInfo + "%\n"
+	l,err := load.Avg()		//Load
+	if err!= nil {
+		return "出错啦！"
+	}
+	loadInfo1 := strconv.FormatFloat(l.Load1,'f',2,64)
+	loadInfo5 := strconv.FormatFloat(l.Load5,'f',2,64)
+	loadInfo15 := strconv.FormatFloat(l.Load15,'f',2,64)
+	loadText := "系统负载  " + loadInfo1 + " " + loadInfo5 + " " + loadInfo15
+	text =  text + cpuText + memText + swapText + diskText + loadText
 	return text
 }
 
