@@ -5,7 +5,6 @@ import (
 	"github.com/Tnze/CoolQ-Golang-SDK/cqp"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
-	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	"strconv"
 	"strings"
@@ -27,7 +26,7 @@ func init() {
 
 func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, msg string, font int32) int32 {
 	defer handlePanic()
-	if strings.HasPrefix(msg, "[CQ:at,qq=3********]") && msg[22:30] == "#sysinfo" {	//群机器人的QQ号
+	if strings.HasPrefix(msg, "[CQ:at,qq=3*********]") && msg[22:30] == "#sysinfo" {	//群机器人的QQ号
 		reply := handleCmd()
 		cqp.SendGroupMsg(fromGroup, reply)
 	}
@@ -48,25 +47,25 @@ func handleCmd() string {
 	var cpuText string
 	c, err := cpu.Percent(time.Second,false)		//CPU
 	if err!= nil {
-		return "出错啦！"
+		return "计算CPU使用量时出错啦！"
 	}
 	cpuInfo := strconv.FormatFloat(c[0],'f',1,64)
 	cpuText = "CPU的使用量为" + cpuInfo + "%\n"
 	m, err := mem.VirtualMemory()		//VirtualMemory
 	if err!= nil {
-		return "出错啦！"
+		return "计算物理内存使用量时出错啦！"
 	}
 	memInfo := strconv.FormatFloat(m.UsedPercent,'f',1,64)
 	memText := "物理内存的使用量为" + memInfo + "%\n"
 	s, err := mem.SwapMemory()		//SwapMemory
 	if err!= nil {
-		return "出错啦！"
+		return "计算虚拟内存使用量时出错啦！"
 	}
 	swapInfo := strconv.FormatFloat(s.UsedPercent,'f',1,64)
 	swapText := "虚拟内存的使用量为" + swapInfo + "%\n"
 	d,err := disk.Usage("/")		//Disk
 	if err!= nil {
-		return "出错啦！"
+		return "计算硬盘使用量时出错啦！"
 	}
 	diskInfo := strconv.FormatFloat(d.UsedPercent,'f',1,64)
 	diskText := "硬盘的使用量为" + diskInfo + "%"
